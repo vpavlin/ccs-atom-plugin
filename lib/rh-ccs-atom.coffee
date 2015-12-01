@@ -20,9 +20,16 @@ module.exports = RhCcsAtom =
     @subscriptions = new CompositeDisposable
     # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace', 'rh-ccs-atom:toggle': => @toggle()
+    @rhCcsAtomRightPanel.updateDependencies()
+    @rhCcsAtomRightPanel.updateStatusBar()
 
   consumeStatusBar: (statusBar) ->
-    @statusBarTile = statusBar.addLeftTile(item: $("<span id='' style='color: #666000'>Loading ...</span>"), priority: 100)    
+    self = this
+    @statusBarTile = statusBar.addLeftTile(item: $("<a href='#'><span id='rh-ccs-status-bar' style='float:right' data-color='orange'>Loading ...</span></a>"), priority: 100)
+    $("#rh-ccs-status-bar").click(() ->
+      self.rightPanel.show()
+      )
+
 
   deactivate: ->
     @statusBarTile?.destroy()
@@ -37,6 +44,7 @@ module.exports = RhCcsAtom =
 
   status: ->
     console.log "status called"
+
 
   toggle: ->
     console.log 'RhCcsAtom was toggled!'

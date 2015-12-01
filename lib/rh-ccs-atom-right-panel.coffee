@@ -34,7 +34,7 @@ class RhCcsAtomRightPanel
   getElement: ->
     @element
 
-  updateDepTable: (deps)->
+  updateDepTable: ()->
     console.log(deps)
     content = $('<tbody>')
     for dep in deps
@@ -48,6 +48,40 @@ class RhCcsAtomRightPanel
           @checkCucos(dep)
 
     $('#rh-ccs-dep-table').append(content)
+
+  updateStatusBar: () ->
+    console.log "Updating Status Bar"
+    @bar = $("#rh-ccs-status-bar")
+    if $(@bar).html() == undefined or $(@bar).html() == "Loading..."
+      setTimeout(@updateStatusBar, 500)
+      return
+
+    @analyzed = 0
+    @to_analyze = 0
+    @some_undefined = false
+    for dep in deps
+      if dep.analyzed == true
+        @analyzed++
+      else if dep.analyzed == false
+        @to_analyze++
+      else if dep.analyzed == undefined
+        @some_undefined = true
+
+    @text = ""
+    @orig_color = $(@bar).attr('data-color')
+    @color = @orig_color
+    if !@some_undefined
+      if @to_analyze == 0
+        @text = "You are all good! (All #{@analyzed} deps ok)"
+        @color = "green"
+      else if @analyzed == 0
+        @text = "Ugh, this is terrible (All #{@to_analyze} deps not analyzed)"
+        @color = "red"
+      else
+        @text = "#{@to_analyze} deps to analyze (#{@analyzed} deps analyzed)"
+        @color = "orange"
+
+      $(@bar).html(@text).removeClass(@orig_color).attr('data-color', @color).addClass(@color)
 
   nvrToId: (orig_name, orig_ver) ->
     ver = orig_ver.replace(/\./g, "-")
@@ -63,20 +97,16 @@ class RhCcsAtomRightPanel
     ret
 
   cucosResponse: (self, id, data) ->
-
-    #console.log data["properties"]["npm.name"][0]
-    #@name = data["properties"]["npm.name"][0]
-    #@ver = data["properties"]["npm.version"][0]
-    #@id = @nvrToId(@name, @ver)
-    console.log id
     $("#rh-ccs-dep-table ##{id}").find("td").last().html("<a href='##{id}' class='detail'>Detail</a>")
-    if id in timers
+    @updateStatusBar()
+    if timers[id] != undefined
       clearInterval(timers[id])
+      delete timers[id]
 
   cucosAnalyzeRequest: (id) ->
     self = this
     dep = @findInDeps(id)
-
+    $("#rh-ccs-dep-table ##{id}").find("td").last().html("Analyzing...")
     console.log "Sending analyze request for #{dep.name}-#{dep.cucosver}"
     @host = "http://localhost:8000/api/analyze-package-version/"
     @data = {'ecosystem': 'nodejs', 'package': "#{dep.name}", 'version': "#{dep.cucosver}", 'artifact_url': 'http://not/important/right/now'}
@@ -88,13 +118,19 @@ class RhCcsAtomRightPanel
           , 1000)
       ).fail(() ->
         console.log "Request failed:/"
+        alert("Request for analysis failed:(")
+        @cucosNotFound(id)
         )
 
   cucosNotFound: (self, id) ->
+    if timers[id] != undefined
+      return
+
     $("#rh-ccs-dep-table ##{id}").find("td").last().html("<a href='##{id}' class='analyze'>Analyze</a>")
     $("#rh-ccs-dep-table ##{id} .analyze").click(() ->
       self.cucosAnalyzeRequest(id)
     )
+    @updateStatusBar()
 
   checkCucos: (pkg) ->
     self = this
@@ -106,8 +142,10 @@ class RhCcsAtomRightPanel
     uri = "#{host}/api/storage/#{ecosystem}/#{artifact}/#{folder}/#{item}?properties"
     id = @nvrToId(pkg.name, pkg.cucosver)
     $.get(uri, (data) ->
+      pkg.analyzed = true
       self.cucosResponse(self, id, data)
       ).fail( () ->
+        pkg.analyzed = false
         self.cucosNotFound(self, id)
       )
 
@@ -121,6 +159,7 @@ class RhCcsAtomRightPanel
       else
         d.cucosver = ver
       d.id = @nvrToId(d.name, d.cucosver)
+      d.analyzed = undefined
       if @findInDeps(d.id) == false
         deps.push(d)
 
@@ -134,6 +173,6 @@ class RhCcsAtomRightPanel
       packageJson = new File(projectPath + '/package.json', false)
       packageJson.read().then( (packageJsonFile) =>
         parsedFile = JSON.parse(packageJsonFile)
-        parsedDeps = this.parseDependencies(parsedFile)
-        this.updateDepTable(parsedDeps)
+        this.parseDependencies(parsedFile)
+        this.updateDepTable()
         )

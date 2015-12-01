@@ -1,0 +1,22 @@
+{
+  "name": "rh-ccs-atom",
+  "main": "./lib/rh-ccs-atom",
+  "version": "0.0.0",
+  "description": "A short description of your package",
+  "keywords": [],
+  "activationCommands": {
+    "atom-workspace": "rh-ccs-atom:toggle"
+  },
+  "repository": "https://github.com/atom/rh-ccs-atom",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {
+    "fs": "0.0.2",
+    "jquery": "^2.1.4",
+    "jquery-ui": "^1.10.5",
+    "socket.io": "^1.3.7",
+    "socket.io-client": "^1.3.7"
+  }
+}

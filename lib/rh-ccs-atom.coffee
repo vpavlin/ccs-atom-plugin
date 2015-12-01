@@ -1,5 +1,6 @@
 RhCcsAtomRightPanel = require './rh-ccs-atom-right-panel'
 RhCcsAtomModalPanel = require './rh-ccs-atom-modal-panel'
+FileWatcher = require './fw'
 $ = jQuery = require 'jquery'
 {CompositeDisposable} = require 'atom'
 
@@ -9,6 +10,7 @@ module.exports = RhCcsAtom =
   rhCcsAtomRightPanel: null
   rightPanel: null
   subscriptions: null
+  watcher: null
 
   activate: (state) ->
     @rhCcsAtomRightPanel = new RhCcsAtomRightPanel(state.rhCcsAtomRightPanelState)
@@ -22,6 +24,8 @@ module.exports = RhCcsAtom =
     @subscriptions.add atom.commands.add 'atom-workspace', 'rh-ccs-atom:toggle': => @toggle()
     @rhCcsAtomRightPanel.updateDependencies()
     @rhCcsAtomRightPanel.updateStatusBar()
+    @subscriptions.add atom.workspace.observeTextEditors (editor) =>
+      @watcher = FileWatcher(editor)
 
   consumeStatusBar: (statusBar) ->
     self = this

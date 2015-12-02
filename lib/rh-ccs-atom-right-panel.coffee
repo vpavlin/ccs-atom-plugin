@@ -1,7 +1,5 @@
 $ = jQuery = require 'jquery'
 fs = require 'fs'
-#require 'jquery-ui'
-io = require 'socket.io-client'
 {File} = require 'atom'
 Data = require './data'
 

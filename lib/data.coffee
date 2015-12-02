@@ -84,7 +84,7 @@ class Data
         @score -= (parseInt(d.metadata.git.opened_prs)/parseInt(d.metadata.git.closed_prs)-1)*10
 
 
-    @score
+    parseInt(@score)
 
   scoreToColor: (score) ->
     if score > 75

@@ -18,8 +18,10 @@ module.exports = RhCcsAtom =
     @modalPanel = atom.workspace.addModalPanel(item: @rhCcsAtomModalPanel.getElement(), visible: false)
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
-    # Register command that toggles this view
+    # Register command that toggles this view toggle handlerh
     @subscriptions.add atom.commands.add 'atom-workspace', 'rh-ccs-atom:toggle': => @toggle()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'rh-ccs-atom-modal:hide': => @modalPanel.hide()
+    @rhCcsAtomRightPanel.setModalHandler(@rhCcsAtomModalPanel, @modalPanel)
     @rhCcsAtomRightPanel.updateDependencies()
     @rhCcsAtomRightPanel.updateStatusBar()
 
@@ -49,10 +51,11 @@ module.exports = RhCcsAtom =
   toggle: ->
     console.log 'RhCcsAtom was toggled!'
 
+    @rhCcsAtomRightPanel.updateDependencies()
+    @rhCcsAtomRightPanel.updateStatusBar()
     if @rightPanel.isVisible()
       @rightPanel.hide()
       #@modalPanel.hide()
     else
       @rightPanel.show()
-      @rhCcsAtomRightPanel.updateDependencies()
       #@modalPanel.show()

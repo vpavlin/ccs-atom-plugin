@@ -23,14 +23,76 @@
     background-color: white;
 }
 
-#rh-ccs-status-bar.green {
+#rh-ccs-atom-right-panel {
+  min-width: 300px;
+}
+
+#rh-ccs-atom-right-panel h1 {
+  text-align: center;
+}
+
+#rh-ccs-atom-right-panel table {
+  width: 100%;
+}
+
+#rh-ccs-atom-right-panel table td.buttons {
+  width: 80px;
+  text-align: center;
+}
+
+#rh-ccs-atom-right-panel table td.score {
+  text-align: center;
+}
+
+#rh-ccs-atom-right-panel table td.version {
+  padding-right: 10px;
+  text-align: right;
+}
+
+#rh-ccs-atom-right-panel table tr {
+  border-bottom: 1px solid #444444
+}
+
+.green {
   color: #55FF55
 }
 
-#rh-ccs-status-bar.red {
+.red {
   color: #FF5555
 }
 
-#rh-ccs-status-bar.orange {
+.orange {
   color: #FFA200
+}
+
+#rh-ccs-atom-modal {
+  min-height: 300px;
+}
+
+#rh-ccs-atom-modal .emphasize{
+  font-style: italic;
+}
+#rh-ccs-atom-modal table {
+  width: 100%
+}
+
+#rh-ccs-atom-modal table th {
+  font-size: 1.2em;
+}
+
+#rh-ccs-atom-modal #table-header td {
+  text-align: center;
+  font-size: 2em;
+}
+
+#rh-ccs-atom-modal #table-cves, #table-github {
+  margin-top: 20px
+}
+
+#rh-ccs-atom-modal table .content tr {
+  border-bottom: 1px solid #444444;
+}
+
+#rh-ccs-atom-modal #table-cves .content .cve-id {
+  color: #FF5555
 }

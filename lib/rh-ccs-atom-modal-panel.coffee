@@ -73,4 +73,7 @@ class RhCcsAtomModalPanel
 
     @content.append(@constructGitStats(d))
 
+    if d.metadata.manifest.description != undefined
+      @content.append("<table id='table-desc'><tr><th>Description</th></tr></tr><td><p>#{d.metadata.manifest.description}</p></td></tr></table>")
+
     @content

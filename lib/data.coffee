@@ -73,6 +73,9 @@ class Data
     if d.metadata.manifest.scripts == undefined || d.metadata.manifest.scripts.tests == undefined || d.metadata.manifest.scripts.tests == ""
       @score -= 2
 
+    if d.metadata.manifest.description == undefined
+      @score -= 2
+
     if d.metadata.git == undefined || d.metadata.git == null
       @score -=5
     else
@@ -83,8 +86,15 @@ class Data
       if parseInt(d.metadata.git.closed_prs) != 0
         @score -= (parseInt(d.metadata.git.opened_prs)/parseInt(d.metadata.git.closed_prs)-1)*10
 
+    res = 0
+    if @score > 100
+      res = 100
+    else if @score < 0
+      res = 0
+    else
+      res = parseInt(@score)
 
-    parseInt(@score)
+    res
 
   scoreToColor: (score) ->
     if score > 75

@@ -198,7 +198,7 @@ class RhCcsAtomRightPanel
 
     @file_watch_timer = setTimeout(() ->
         self.updateDependencies()
-      , 30000)
+      , 5000)
 
   updateDependencies: ->
     projectPath = atom.project.getPaths()[0]

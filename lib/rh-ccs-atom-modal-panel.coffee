@@ -52,10 +52,11 @@ class RhCcsAtomModalPanel
     @table = $("<table id='table-header'></table>")
     @table.append("<tr><th>Package</th><th>Version</th><th>License</th><th>Score</th></tr>")
     if d.metadata.manifest.license == undefined
-      @em = "emphasize"
+      @em = "emphasize fail"
     else
-      @em = ""
-    @table.append("<tr><td>#{d.name}</td><td>#{d.cucosver}</td><td class='#{@em}'>#{d.metadata.manifest.license}</td><td class='#{data.scoreToColor(@score)}'>#{@score}</td></tr>")
+      @em = "ok"
+
+    @table.append("<tr><td>#{d.name}</td><td>#{d.cucosver}</td><td class='#{@em} license'>#{d.metadata.manifest.license}</td><td class='#{data.scoreToColor(@score)}'>#{@score}</td></tr>")
     @content.append(@table)
 
 

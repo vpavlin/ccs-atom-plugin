@@ -63,26 +63,28 @@ class Data
 
     @score = 100
     if d.metadata.manifest.license == undefined
-      @score -= 5
+      @score -= 10
 
     @cve_len = @getCVEsLen(d)
-    @score -= @cve_len * 20
+    @score -= @cve_len * 30
     if d.metadata.manifest.author == undefined || d.metadata.manifest.author == ""
-      @score -= 2
+      @score -= 5
 
     if d.metadata.manifest.scripts == undefined || d.metadata.manifest.scripts.tests == undefined || d.metadata.manifest.scripts.tests == ""
-      @score -= 2
+      @score -= 5
 
     if d.metadata.manifest.description == undefined
-      @score -= 2
+      @score -= 5
 
     if d.metadata.git == undefined || d.metadata.git == null
-      @score -=5
+      @score -=15
     else
       if parseInt(d.metadata.git.closed_issues) != 0
         @score -= (parseInt(d.metadata.git.opened_issues)/parseInt(d.metadata.git.closed_issues)-1)*10
       if parseInt(d.metadata.git.stargazers_count) > 500
         @score += 2
+      else if parseInt(d.metadata.git.stargazers_count) == 0
+        @score -=5
       if parseInt(d.metadata.git.closed_prs) != 0
         @score -= (parseInt(d.metadata.git.opened_prs)/parseInt(d.metadata.git.closed_prs)-1)*10
 
@@ -99,7 +101,7 @@ class Data
   scoreToColor: (score) ->
     if score > 75
       "green"
-    else if score > 50 && score < 75
+    else if score > 50 && score <= 75
       "orange"
     else
       "red"
